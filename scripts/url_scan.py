@@ -40,7 +40,6 @@ def get_scan_report(scan_id):
         return None
 
  
-
 def main():
   """Scans a file or URL and displays the scan results."""
 
