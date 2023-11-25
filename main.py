@@ -11,7 +11,7 @@ def scan_file(file_path):
   files = {'file': open(file_path, 'rb')}
   headers = {
       "accept": "application/json",
-      "x-apikey": "057e7f0c958c5dc0e3683ff3cbe9d1274bfeb3d3c44f892c2e7849612b5e7cf3"
+      "x-apikey": "API_KEY"
   }
 
   response = requests.post(url, files=files, headers=headers)
@@ -30,7 +30,7 @@ def scan_url(scan_url):
   payload = { "url": scan_url }
   headers = {
       "accept": "application/json",
-      "x-apikey": "057e7f0c958c5dc0e3683ff3cbe9d1274bfeb3d3c44f892c2e7849612b5e7cf3",
+      "x-apikey": "API_KEY",
       "content-type": "application/x-www-form-urlencoded"
   }
 
@@ -50,7 +50,7 @@ def get_scan_report(scan_id):
     url = f"https://www.virustotal.com/api/v3/analyses/{scan_id}"
     headers = {
         "accept": "application/json",
-        "x-apikey": "057e7f0c958c5dc0e3683ff3cbe9d1274bfeb3d3c44f892c2e7849612b5e7cf3"
+        "x-apikey": "API_KEY"
     }
     response = requests.get(url, headers=headers)
     return response.text  # Return the scan report as a string
