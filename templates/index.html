@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirusTotal Scan Results</title>
+</head>
+<body>
+    <h1>VirusTotal Scan Results</h1>
+    <form method="post" action="/" enctype="multipart/form-data">
+        <label for="file_path">Upload File:</label>
+        <input type="file" name="file_path">
+        <button type="submit" name="submit_file">Scan File</button>
+        <br>
+        <br>
+        <label for="url">Enter URL:</label>
+        <input type="text" name="url">
+        <button type="submit" name="submit_url">Scan URL</button>
+    </form>
+    {% if scan_report %}
+        <h2>Scan Report:</h2>
+        <pre>{{ scan_report | safe }}</pre>
+    {% endif %}
+</body>
+</html>
