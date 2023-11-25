@@ -1,0 +1,1 @@
+Files that will be uploaded for scanning will appear in this uploads folder 
