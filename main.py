@@ -53,14 +53,14 @@ def get_scan_report(scan_id):
         "x-apikey": "057e7f0c958c5dc0e3683ff3cbe9d1274bfeb3d3c44f892c2e7849612b5e7cf3"
     }
     response = requests.get(url, headers=headers)
-    return response.text  # Return the scan report as a string
-    # return response.json()
+    # print(response.text)
+    # return response.text  # Return the scan report as a string
+    return response.json()
     # response = json.loads(response.text)
     # return response["data"]["attributes"]["results"]
 
-# def format_scan_report(scan_report):
-#     formatted_report = json.dumps(scan_report, indent=4)
-#     return formatted_report
+def format_scan_report(scan_report):
+    return scan_report
 
 
 
@@ -70,12 +70,17 @@ def index():
         if 'submit_file' in request.form:
             file_path_or_url = handle_uploaded_file(request.files['file_path'])
             scan_id = scan_file(file_path_or_url)
+            file_scan_report = get_scan_report(scan_id)
+            return render_template('index.html', file_scan_report=file_scan_report)
         elif 'submit_url' in request.form:
             file_path_or_url = request.form['url']
             scan_id = scan_url(file_path_or_url)
+            url_scan_report = get_scan_report(scan_id)
+            return render_template('index.html', url_scan_report=url_scan_report)
 
-        scan_report = get_scan_report(scan_id)
-        return render_template('index.html', scan_report=scan_report)
+        # scan_report = get_scan_report(scan_id)
+        # formatted_scan_report = format_scan_report(scan_report)
+        # return render_template('index.html', formatted_scan_report=formatted_scan_report)
 
     return render_template('index.html')
 
