@@ -1,136 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VirusTotal Scan Results</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>SecureScan</title>
+    <!-- Favicon-->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{url_for('static',filename='assets/favicon.ico')}}"
+    />
+    <!-- Bootstrap Icons-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Google fonts-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <!-- SimpleLightbox plugin CSS-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
+      rel="stylesheet"
+    />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link
+      href="{{url_for('static', filename='css/styles.css')}}"
+      rel="stylesheet"
+    />
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .inner-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .inner-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
-    <h1>VirusTotal Scan Results</h1>
-    <form method="post" action="/" enctype="multipart/form-data">
-        <label for="file_path">Upload File:</label>
-        <input type="file" name="file_path">
-        <br>
-        <label for="url">Enter URL:</label>
-        <input type="text" name="url">
-        <br>
-        <button type="submit" name="submit_file">Scan File</button>
-        <button type="submit" name="submit_url">Scan URL</button>
-    </form>
-    {% if file_scan_report %}
-        <h2>File Scan Report:</h2>
-        <table>
-            <tr>
-                <th>Attribute</th>
-                <th>Value</th>
-            </tr>
-            <tr>
-                <td>SHA256</td>
-                <td>{{ file_scan_report.meta.file_info.sha256 }}</td>
-            </tr>
-            <tr>
-                <td>SHA1</td>
-                <td>{{ file_scan_report.meta.file_info.sha1 }}</td>
-            </tr>
-            <tr>
-                <td>MD5</td>
-                <td>{{ file_scan_report.meta.file_info.md5 }}</td>
-            </tr>
-            <tr>
-                <td>File Size</td>
-                <td>{{ file_scan_report.meta.file_info.size }}</td>
-            </tr>
-            <tr>
-                <td>Status</td>
-                <td>{{ file_scan_report.data.attributes.status }}</td>
-            </tr>
-        </table>
-        
-        <h2>Scan Results</h2>
-        
-        <table>
-            <tr>
-                <th>Engine</th>
-                <th>Category</th>
-                <th>Result</th>
-                <th>Method</th>
-                <th>Engine Version</th>
-                <th>Engine Update</th>
-            </tr>
-            {% for engine, result in file_scan_report.data.attributes.results.items() %}
-                <tr>
-                    <td>{{ engine }}</td>
-                    <td>{{ result.category }}</td>
-                    <td>{{ result.result or "N/A" }}</td>
-                    <td>{{ result.method }}</td>
-                    <td>{{ result.engine_version }}</td>
-                    <td>{{ result.engine_update }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
-    {% if url_scan_report %}
-        <h2>URL Scan Report:</h2>
-        <table>
-            <tbody>
-                <tr>
-                    <td><strong>URL:</strong></td>
-                    <td>{{ url_scan_report.meta.url_info.url | default('N/A') }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Status:</strong></td>
-                    <td>{{ url_scan_report.data.attributes.status | default('N/A') }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Date:</strong></td>
-                    <td>{{ url_scan_report.data.attributes.date | default('N/A') }}</td>
-                </tr>
-            </tbody>
-        </table>
+  </head>
+  <body id="page-top">
+    <!-- Scroll to Top Button -->
+    <button onclick="topFunction()" id="myBtn" title="Go to top">
+      Scroll To Top
+    </button>
+
+    <!-- Navigation-->
+    <nav
+      class="navbar navbar-expand-lg navbar-light fixed-top py-3"
+      id="mainNav"
+    >
+      <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="#page-top">SecureScan</a>
+        <button
+          class="navbar-toggler navbar-toggler-right"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ms-auto my-2 my-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#scan-now">Scan Now</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#connect">Connect</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead">
+      <div class="container px-4 px-lg-5 h-100">
+        <div
+          class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center"
+        >
+          <div class="col-lg-8 align-self-end">
+            <h1 class="text-white font-weight-bold">Scan URL and Files</h1>
+            <hr class="divider" />
+          </div>
+          <div class="col-lg-8 align-self-baseline">
+            <p class="text-white-75 mb-5">
+              Welcome to SecureScan, your go-to platform for comprehensive file
+              and URL scanning and analysis. At SecureScan, our primary
+              objective is to empower users with a reliable and efficient tool
+              to assess the security of their digital files.
+            </p>
+            <a class="btn btn-primary btn-xl" href="#scan-now"> Scan Now</a>
+          </div>
+        </div>
+      </div>
+    </header>
     
-        {% if url_scan_report.data.attributes.results %}
-            <h2>Scan Results:</h2>
-            <table class="inner-table">
-                <thead>
-                    <tr>
-                        <th>Engine Name</th>
-                        <th>Category</th>
-                        <th>Result</th>
-                        <th>Method</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for engine, details in url_scan_report.data.attributes.results.items() %}
-                        <tr>
-                            <td>{{ engine }}</td>
-                            <td>{{ details.category | default('N/A') }}</td>
-                            <td>{{ details.result | default('N/A') }}</td>
-                            <td>{{ details.method | default('N/A') }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
+
+    <!-- Scan Section -->
+
+    <section class="page-section bg-primary" id="scan-now">
+      <h1 class="d-flex justify-content-center">Scan File or URL</h1>
+      <br />
+      <form method="post" action="/" enctype="multipart/form-data">
+        <div class="input-group mb-3 d-flex justify-content-center">
+          <div class="custom-file">
+            <label class="custom-file-label" for="file_path"></label>
+            <input
+              type="file"
+              name="file_path"
+              class="custom-file-input"
+              id="inputGroupFile01"
+            />
+          </div>
+          <div class="input-group-prepend">
+            <button type="submit" name="submit_file" class="input-group-text">
+              Scan File
+            </button>
+          </div>
+        </div>
+
+        <br />
+
+        <div class="d-flex justify-content-center">
+          <div class="input-group mb-3" style="width: 29vw">
+            <input
+              type="text"
+              name="url"
+              class="form-control"
+              placeholder="Enter URL"
+              aria-label="Enter URL"
+              aria-describedby="basic-addon2"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary bg-white"
+                name="submit_url"
+                type="submit"
+              >
+                Scan URL
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      {% if file_scan_report %}
+      <h2>File Scan Report:</h2>
+      <table>
+        <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>SHA256</td>
+          <td>{{ file_scan_report.meta.file_info.sha256 }}</td>
+        </tr>
+        <tr>
+          <td>SHA1</td>
+          <td>{{ file_scan_report.meta.file_info.sha1 }}</td>
+        </tr>
+        <tr>
+          <td>MD5</td>
+          <td>{{ file_scan_report.meta.file_info.md5 }}</td>
+        </tr>
+        <tr>
+          <td>File Size</td>
+          <td>{{ file_scan_report.meta.file_info.size }}</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td>{{ file_scan_report.data.attributes.status }}</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <h3>Stats:</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td><strong>Harmless:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.harmless |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Malicious:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.malicious |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Suspicious:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.suspicious |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Undetected:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.undetected |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Timeout:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.timeout |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Confirmed-Timeout:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.confirmed_timeout
+                    | default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Type-Unsupported:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.type_unsupported |
+                    default('N/A') }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Failure:</strong></td>
+                  <td>
+                    {{ file_scan_report.data.attributes.stats.failure |
+                    default('N/A') }}
+                  </td>
+                </tr>
+              </tbody>
             </table>
-        {% endif %}
-    {% endif %}
-</body>
+          </td>
+        </tr>
+      </table>
+
+      <h2>Scan Results</h2>
+
+      <table>
+        <tr>
+          <th>Engine</th>
+          <th>Category</th>
+          <th>Result</th>
+          <th>Method</th>
+          <th>Engine Version</th>
+          <th>Engine Update</th>
+        </tr>
+        {% for engine, result in
+        file_scan_report.data.attributes.results.items() %}
+        <tr>
+          <td>{{ engine }}</td>
+          <td>{{ result.category }}</td>
+          <td>{{ result.result or "N/A" }}</td>
+          <td>{{ result.method }}</td>
+          <td>{{ result.engine_version }}</td>
+          <td>{{ result.engine_update }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %} {% if url_scan_report %}
+      <h2>URL Scan Report:</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td><strong>URL:</strong></td>
+            <td>{{ url_scan_report.meta.url_info.url | default('N/A') }}</td>
+          </tr>
+          <tr>
+            <td><strong>Status:</strong></td>
+            <td>
+              {{ url_scan_report.data.attributes.status | default('N/A') }}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <h3>Stats:</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><strong>Harmless:</strong></td>
+                    <td>
+                      {{ url_scan_report.data.attributes.stats.harmless |
+                      default('N/A') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Malicious:</strong></td>
+                    <td>
+                      {{ url_scan_report.data.attributes.stats.malicious |
+                      default('N/A') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Suspicious:</strong></td>
+                    <td>
+                      {{ url_scan_report.data.attributes.stats.suspicious |
+                      default('N/A') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Undetected:</strong></td>
+                    <td>
+                      {{ url_scan_report.data.attributes.stats.undetected |
+                      default('N/A') }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Timeout:</strong></td>
+                    <td>
+                      {{ url_scan_report.data.attributes.stats.timeout |
+                      default('N/A') }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      {% if url_scan_report.data.attributes.results %}
+      <h2>Scan Results:</h2>
+      <table class="inner-table">
+        <thead>
+          <tr>
+            <th>Engine Name</th>
+            <th>Category</th>
+            <th>Result</th>
+            <th>Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for engine, details in
+          url_scan_report.data.attributes.results.items() %}
+          <tr>
+            <td><strong>{{ engine }}</strong></td>
+            <td>{{ details.category | default('N/A') }}</td>
+            <td>{{ details.result | default('N/A') }}</td>
+            <td>{{ details.method | default('N/A') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %} {% endif %}
+    </section>
+
+    
+
+    <!-- Footer-->
+    <footer class="bg-light py-5" id="connect">
+      <div class="container px-4 px-lg-5">
+        <div class="small text-center text-muted">
+          Copyright &copy; 2023 -  SecureScan
+        </div>
+        <!-- <div class="small text-center text-muted">
+          Made With &#10084; by Deepak Gurjar
+        </div> -->
+
+        <div class="small text-center text-muted">
+           <a href="https://github.com/deepak-gurjar07/Malicious_File_and_URL_Scanner" target="_blank">Find on Github:<i class="fa-brands fa-github"></i></a>
+        </div>
+
+
+      </div>
+
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SimpleLightbox plugin JS-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/connect-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    <script>
+      // Scroll to top start
+
+      // Get the button:
+      let mybutton = document.getElementById("myBtn");
+
+      // When the user scrolls down 20px from the top of the document, show the button
+      window.onscroll = function () {
+        scrollFunction();
+      };
+
+      function scrollFunction() {
+        if (
+          document.body.scrollTop > 20 ||
+          document.documentElement.scrollTop > 20
+        ) {
+          mybutton.style.display = "block";
+        } else {
+          mybutton.style.display = "none";
+        }
+      }
+
+      // When the user clicks on the button, scroll to the top of the document
+      function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      }
+    </script>
+  </body>
 </html>
