@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+<<<<<<< HEAD
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -44,6 +45,11 @@
       href="{{url_for('static', filename='css/styles.css')}}"
       rel="stylesheet"
     />
+=======
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VirusTotal Scan Results</title>
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
     <style>
       table {
         width: 100%;
@@ -65,6 +71,7 @@
         margin-top: 10px;
       }
     </style>
+<<<<<<< HEAD
   </head>
   <body id="page-top">
     <!-- Scroll to Top Button -->
@@ -199,6 +206,184 @@
         <tr>
           <td>Status</td>
           <td>{{ file_scan_report.data.attributes.status }}</td>
+=======
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <h1>VirusTotal Scan Results</h1>
+    <form method="post" action="/" enctype="multipart/form-data">
+      <div class="input-group mb-3">
+        <div class="custom-file">
+          <label class="custom-file-label" for="file_path"></label>
+          <input
+            type="file"
+            name="file_path"
+            class="custom-file-input"
+            id="inputGroupFile01"
+          />
+        </div>
+        <div class="input-group-prepend">
+          <button type="submit" name="submit_file" class="input-group-text">
+            Scan File
+          </button>
+        </div>
+      </div>
+
+      <br />
+
+
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          name="url"
+          class="form-control"
+          placeholder="Enter URL"
+          aria-label="Enter URL"
+          aria-describedby="basic-addon2"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" name="submit_url" type="submit">
+            Scan URL
+          </button>
+        </div>
+      </div>
+
+
+    </form>
+    {% if file_scan_report %}
+    <h2>File Scan Report:</h2>
+    <table>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>SHA256</td>
+        <td>{{ file_scan_report.meta.file_info.sha256 }}</td>
+      </tr>
+      <tr>
+        <td>SHA1</td>
+        <td>{{ file_scan_report.meta.file_info.sha1 }}</td>
+      </tr>
+      <tr>
+        <td>MD5</td>
+        <td>{{ file_scan_report.meta.file_info.md5 }}</td>
+      </tr>
+      <tr>
+        <td>File Size</td>
+        <td>{{ file_scan_report.meta.file_info.size }}</td>
+      </tr>
+      <tr>
+        <td>Status</td>
+        <td>{{ file_scan_report.data.attributes.status }}</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <h3>Stats:</h3>
+          <table>
+            <tbody>
+              <tr>
+                <td><strong>Harmless:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.harmless |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Malicious:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.malicious |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Suspicious:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.suspicious |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Undetected:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.undetected |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Timeout:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.timeout |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Confirmed-Timeout:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.confirmed_timeout |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Type-Unsupported:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.type_unsupported |
+                  default('N/A') }}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Failure:</strong></td>
+                <td>
+                  {{ file_scan_report.data.attributes.stats.failure |
+                  default('N/A') }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <h2>Scan Results</h2>
+
+    <table>
+      <tr>
+        <th>Engine</th>
+        <th>Category</th>
+        <th>Result</th>
+        <th>Method</th>
+        <th>Engine Version</th>
+        <th>Engine Update</th>
+      </tr>
+      {% for engine, result in file_scan_report.data.attributes.results.items()
+      %}
+      <tr>
+        <td>{{ engine }}</td>
+        <td>{{ result.category }}</td>
+        <td>{{ result.result or "N/A" }}</td>
+        <td>{{ result.method }}</td>
+        <td>{{ result.engine_version }}</td>
+        <td>{{ result.engine_update }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %} {% if url_scan_report %}
+    <h2>URL Scan Report:</h2>
+    <table>
+      <tbody>
+        <tr>
+          <td><strong>URL:</strong></td>
+          <td>{{ url_scan_report.meta.url_info.url | default('N/A') }}</td>
+        </tr>
+        <tr>
+          <td><strong>Status:</strong></td>
+          <td>{{ url_scan_report.data.attributes.status | default('N/A') }}</td>
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
         </tr>
         <tr>
           <td colspan="2">
@@ -208,34 +393,51 @@
                 <tr>
                   <td><strong>Harmless:</strong></td>
                   <td>
+<<<<<<< HEAD
                     {{ file_scan_report.data.attributes.stats.harmless |
+=======
+                    {{ url_scan_report.data.attributes.stats.harmless |
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
                     default('N/A') }}
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Malicious:</strong></td>
                   <td>
+<<<<<<< HEAD
                     {{ file_scan_report.data.attributes.stats.malicious |
+=======
+                    {{ url_scan_report.data.attributes.stats.malicious |
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
                     default('N/A') }}
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Suspicious:</strong></td>
                   <td>
+<<<<<<< HEAD
                     {{ file_scan_report.data.attributes.stats.suspicious |
+=======
+                    {{ url_scan_report.data.attributes.stats.suspicious |
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
                     default('N/A') }}
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Undetected:</strong></td>
                   <td>
+<<<<<<< HEAD
                     {{ file_scan_report.data.attributes.stats.undetected |
+=======
+                    {{ url_scan_report.data.attributes.stats.undetected |
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
                     default('N/A') }}
                   </td>
                 </tr>
                 <tr>
                   <td><strong>Timeout:</strong></td>
                   <td>
+<<<<<<< HEAD
                     {{ file_scan_report.data.attributes.stats.timeout |
                     default('N/A') }}
                   </td>
@@ -258,6 +460,9 @@
                   <td><strong>Failure:</strong></td>
                   <td>
                     {{ file_scan_report.data.attributes.stats.failure |
+=======
+                    {{ url_scan_report.data.attributes.stats.timeout |
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
                     default('N/A') }}
                   </td>
                 </tr>
@@ -265,6 +470,7 @@
             </table>
           </td>
         </tr>
+<<<<<<< HEAD
       </table>
 
       <h2>Scan Results</h2>
@@ -437,5 +643,34 @@
         document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
       }
     </script>
+=======
+      </tbody>
+    </table>
+
+    {% if url_scan_report.data.attributes.results %}
+    <h2>Scan Results:</h2>
+    <table class="inner-table">
+      <thead>
+        <tr>
+          <th>Engine Name</th>
+          <th>Category</th>
+          <th>Result</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for engine, details in
+        url_scan_report.data.attributes.results.items() %}
+        <tr>
+          <td><strong>{{ engine }}</strong></td>
+          <td>{{ details.category | default('N/A') }}</td>
+          <td>{{ details.result | default('N/A') }}</td>
+          <td>{{ details.method | default('N/A') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %} {% endif %}
+>>>>>>> a5bfb2bcc7100cf7f2d8b99d55b4e2cac392b7c1
   </body>
 </html>
